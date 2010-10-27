@@ -47,7 +47,7 @@
     (slime)))
 
 ; Use those for loading and killing kibo
-(global-set-key "\C-cl" 'acl-rpl)
+(global-set-key "\C-cl" 'sbcl)
 (global-set-key "\C-cf"
                 '(lambda ()
                   (interactive)
