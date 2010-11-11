@@ -21,11 +21,11 @@
 (add-to-list 'load-path "~/.emacs.d/site")
 
 ;; ROS stuff
-(add-to-list 'load-path "/opt/ros/cturtle/ros/tools/rosemacs")
-(require 'rosemacs)
-(invoke-rosemacs)
+;;(add-to-list 'load-path "/opt/ros/cturtle/ros/tools/rosemacs")
+;;(require 'rosemacs)
+;;(invoke-rosemacs)
 
-(global-set-key "\C-x\C-r" ros-keymap)
+;;(global-set-key "\C-x\C-r" ros-keymap)
 
 
 (cua-mode t)
@@ -47,15 +47,15 @@
     (slime)))
 
 ; Use those for loading and killing kibo
-(global-set-key "\C-cl" 'sbcl)
+(global-set-key "\C-cl" 'acl-rpl)
 (global-set-key "\C-cf"
                 '(lambda ()
                   (interactive)
                   (slime-quit-lisp)))
 
 ;; slime (might prevent ROS)
-;; (if (file-readable-p "/usr/local/lehrstuhl/DIR/lisp/config-host/slime")
-;;    (load "/usr/local/lehrstuhl/DIR/lisp/config-host/slime"))
+(if (file-readable-p "/usr/local/lehrstuhl/DIR/lisp/config-host/slime")
+   (load "/usr/local/lehrstuhl/DIR/lisp/config-host/slime"))
 ;; slime from git
 ;; (if (file-readable-p "/usr/wiss/kargm/work/lisp/slime")
 ;;    (load "/usr/wiss/kargm/work/lisp/slime"))
@@ -178,12 +178,12 @@
     ))
 
 
-;; (add-to-list 'load-path "/usr/share/common-lisp/source/slime/contrib")
-;; (add-to-list 'load-path "/usr/share/common-lisp/source/slime/")
-(add-to-list 'load-path "/usr/wiss/kargm/work/lisp/slime")
+(add-to-list 'load-path "/usr/share/common-lisp/source/slime/contrib")
+(add-to-list 'load-path "/usr/share/common-lisp/source/slime/")
+;;(add-to-list 'load-path "/usr/wiss/kargm/work/lisp/slime")
 (require 'slime)
 
-(slime-setup '(slime-fancy slime-asdf slime-indentation slime-ros))
+(slime-setup '(slime-fancy slime-asdf slime-indentation ))
 ;;something nasty undoes this change when just in customize options
 (setf slime-complete-symbol-function (quote slime-fuzzy-complete-symbol))
 
@@ -291,6 +291,7 @@
 
 ;; Custom Buttons
 ;; common UI conventions
-(global-set-key (kbd "C-s") 'save-buffer)
-(global-set-key (kbd "C-a") 'mark-whole-buffer)
-(global-set-key (kbd "C-f") 'isearch-forward)
+;;(global-set-key (kbd "C-s") 'save-buffer)
+;;(global-set-key (kbd "C-a") 'mark-whole-buffer)
+;;(global-set-key (kbd "C-f") 'isearch-forward)
+
