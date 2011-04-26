@@ -20,13 +20,6 @@
 ;;(add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-color-themes")
 (add-to-list 'load-path "~/.emacs.d/site")
 
-;; ROS stuff
-;;(add-to-list 'load-path "/opt/ros/cturtle/ros/tools/rosemacs")
-;;(require 'rosemacs)
-;;(invoke-rosemacs)
-
-;;(global-set-key "\C-x\C-r" ros-keymap)
-
 
 (cua-mode t)
 (transient-mark-mode 1) ;; No region when it is not highlighted
@@ -54,8 +47,8 @@
                   (slime-quit-lisp)))
 
 ;; slime (might prevent ROS)
-(if (file-readable-p "/usr/local/lehrstuhl/DIR/lisp/config-host/slime")
-   (load "/usr/local/lehrstuhl/DIR/lisp/config-host/slime"))
+;;(if (file-readable-p "/usr/local/lehrstuhl/DIR/lisp/config-host/slime")
+;;(load "/usr/local/lehrstuhl/DIR/lisp/config-host/slime"))
 ;; slime from git
 ;; (if (file-readable-p "/usr/wiss/kargm/work/lisp/slime")
 ;;    (load "/usr/wiss/kargm/work/lisp/slime"))
@@ -73,7 +66,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(bar-cursor-mode t nil (bar-cursor))
+;; '(bar-cursor-mode t nil (bar-cursor))
  '(c-basic-offset (quote set-from-style))
  '(column-number-mode t)
  '(cua-keep-region-after-copy nil)
@@ -100,6 +93,7 @@
  '(next-line-add-newlines nil)
  '(paren-mode (quote paren) nil (paren))
  '(recentf-save-file "~/.emacs.d/.recentf")
+ '(ros-completion-function (quote ido-completing-read))
  '(safe-local-variable-values (quote ((Syntax . Common-Lisp) (Package . SAX) (Encoding . utf-8) (Syntax . COMMON-LISP) (Package . CL-PPCRE) (package . rune-dom) (readtable . runes) (Syntax . ANSI-Common-Lisp) (Base . 10))))
  '(savehist-mode t nil (savehist))
  '(scroll-bar-mode (quote right))
@@ -178,12 +172,12 @@
     ))
 
 
-(add-to-list 'load-path "/usr/share/common-lisp/source/slime/contrib")
-(add-to-list 'load-path "/usr/share/common-lisp/source/slime/")
-;;(add-to-list 'load-path "/usr/wiss/kargm/work/lisp/slime")
+;; (add-to-list 'load-path "/usr/share/common-lisp/source/slime/contrib")
+;; (add-to-list 'load-path "/usr/share/common-lisp/source/slime/")
+(add-to-list 'load-path "/usr/wiss/kargm/work/lisp/slime")
 (require 'slime)
 
-(slime-setup '(slime-fancy slime-asdf slime-indentation ))
+
 ;;something nasty undoes this change when just in customize options
 (setf slime-complete-symbol-function (quote slime-fuzzy-complete-symbol))
 
@@ -263,8 +257,6 @@
 (setq recentf-exclude (append recentf-exclude '(".ftp:.*" ".sudo:.*")))
 (setq recentf-keep '(file-remote-p file-readable-p))
 
-
-
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
@@ -281,7 +273,6 @@
   ;; This is your old M-x.
   (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 
-
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -289,9 +280,51 @@
   ;; If there is more than one, they won't work right.
  '(slime-repl-output-face ((t (:inherit font-lock-string-face :foreground "black")))))
 
-;; Custom Buttons
-;; common UI conventions
-;;(global-set-key (kbd "C-s") 'save-buffer)
-;;(global-set-key (kbd "C-a") 'mark-whole-buffer)
-;;(global-set-key (kbd "C-f") 'isearch-forward)
+(add-to-list 'load-path "/opt/ros/diamondback/ros/tools/rosemacs")
+(require 'rosemacs)
+(invoke-rosemacs)
 
+(global-set-key "\C-x\C-r" ros-keymap)
+
+(require 'rng-loc)
+(condition-case nil ;; error e.g. when running as root
+    (push (concat (ros-package-path "rosemacs") "/rng-schemas.xml") rng-schema-locating-files)
+  (error nil))
+(add-to-list 'auto-mode-alist '("\.launch$" . nxml-mode))
+(add-to-list 'auto-mode-alist '("manifest.xml" . nxml-mode))
+
+
+(slime-setup '(slime-fancy slime-asdf slime-ros))
+
+
+;; Thibaults rosemacs plugin
+(require 'rosemacs-repl)
+
+;; Adapto stuff
+(require 'adapto-util)
+(push (list "nav_pm" "morse-jido-navigation")
+ *adapto-startup-systems*)
+ (setf *adapto-startup-in-package*
+       "mjido-nav-pm")
+
+;; Rosemacs repl shortcuts:
+(global-set-key "\C-cl" '(lambda ()
+                           (interactive)
+                           (slime-ros)
+                           (rosemacs-repl-mode t)))
+(global-set-key "\C-cr"
+                '(lambda ()
+                 (interactive)
+                 (slime-restart-inferior-lisp)))
+(global-set-key "\C-cf"
+                '(lambda ()
+                 (interactive)
+                 (slime-quit-lisp)))
+
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(slime-repl-output-face ((t (:inherit font-lock-string-face :foreground "black")))))
