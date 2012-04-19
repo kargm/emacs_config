@@ -46,6 +46,42 @@
                   (interactive)
                   (slime-quit-lisp)))
 
+(defun set-colour-theme (theme)
+  "Helper function to set a bunch of faces and ignore potential errors from missing faces."
+  (mapc (lambda (setting)
+          (condition-case nil
+              (face-spec-set (car setting) (cdr setting))
+            (error t)))
+        theme))
+(defun light-on-dark-theme ()
+  "Setup the colors for a light-on-dark theme."
+  (interactive)
+  (set-colour-theme
+   '((default . ((((type tty)) (:background "black" :foreground "white")) (t (:background "black" :foreground "grey"))))
+     (cursor . ((t (:background "plum"))))
+     (modeline . ((((type tty)) (:inverse-video t)) (t (:foreground "black" :background "grey75" :box (:style released-button)))))
+     (font-lock-keyword-face . ((t (:foreground "white" :bold t))))
+     (font-lock-comment-face . ((((type tty)) (:foreground "cyan")) (t (:foreground "steelblue" :italic t))))
+     (font-lock-string-face . ((((type tty)) (:foreground "green")) (t (:foreground "lightgreen"))))
+     (font-lock-doc-string-face . ((((type tty)) (:foreground "green")) (t (:foreground "lightgreen"))))
+     (font-lock-doc-face . ((((type tty)) (:foreground "green")) (t (:foreground "lightgreen"))))
+     (font-lock-function-name-face . ((((type tty)) (:foreground "red" :bold t)) (t (:foreground "coral" :bold t))))
+     (font-lock-type-face . ((((type tty)) (:foreground "cyan" :bold t)) (t (:foreground "steelblue" :bold t))))
+     (font-lock-variable-name-face . ((((type tty)) (:foreground "magenta")) (t (:foreground "orchid"))))
+     (font-lock-warning-face . ((t (:foreground "red" :bold t))))
+     (font-lock-reference-face . ((((type tty)) (:foreground "red")) (t (:foreground "coral"))))
+     (font-lock-builtin-face . ((((type tty)) (:foreground "red")) (t (:foreground "coral"))))
+     (font-lock-constant-face . ((((type tty)) (:foreground "red")) (t (:foreground "coral"))))
+     (paren-match . ((((type tty)) (:background "blue")) (t (:background "midnightblue"))))
+     (show-paren-match-face . ((((type tty)) (:background "blue")) (t (:background "midnightblue"))))
+     (zmacs-region . ((((type tty)) (:background "magenta")) (t (:foreground "black" :background "lightcoral"))))
+     (region . ((((type tty)) (:background "magenta")) (t (:foreground "black" :background "lightcoral"))))
+     (isearch . ((t (:foreground "white" :background "red"))))
+     (isearch-secondary . ((((type tty)) (:foreground "red" :background "white")) (t (:foreground "red3" :background "grey"))))
+     (isearch-lazy-highlight-face . ((((type tty)) (:foreground "red" :background "white")) (t (:foreground "red3" :background "grey"))))
+     (trailing-spaces-face . ((((type tty)) (:background "grey")) (t (:background "grey15")))))))
+
+(light-on-dark-theme)
 ;; slime (might prevent ROS)
 ;;(if (file-readable-p "/usr/local/lehrstuhl/DIR/lisp/config-host/slime")
 ;;(load "/usr/local/lehrstuhl/DIR/lisp/config-host/slime"))
@@ -97,7 +133,7 @@
  '(safe-local-variable-values (quote ((Syntax . Common-Lisp) (Package . SAX) (Encoding . utf-8) (Syntax . COMMON-LISP) (Package . CL-PPCRE) (package . rune-dom) (readtable . runes) (Syntax . ANSI-Common-Lisp) (Base . 10))))
  '(savehist-mode t nil (savehist))
  '(scroll-bar-mode (quote right))
- '(slime-backend "/usr/wiss/kargm/work/lisp/slime/swank-loader.lisp")
+ '(slime-backend "/home/kargm/work/lisp/slime/swank-loader.lisp")
  '(slime-complete-symbol*-fancy t)
  '(slime-complete-symbol-function (quote slime-fuzzy-complete-symbol))
  '(slime-ros-completion-function (quote ido-completing-read))
@@ -141,6 +177,7 @@
 (setq default-tab-width 2)
 (setq tab-width 2)
 (setq-default c-basic-offset 2)
+(setq-default indent-tabs-mode nil) 
 
 (setq initial-major-mode 'text-mode)
 (setq default-major-mode 'text-mode)
@@ -174,7 +211,7 @@
 
 ;; (add-to-list 'load-path "/usr/share/common-lisp/source/slime/contrib")
 ;; (add-to-list 'load-path "/usr/share/common-lisp/source/slime/")
-(add-to-list 'load-path "/usr/wiss/kargm/work/lisp/slime")
+(add-to-list 'load-path "/home/kargm/work/lisp/slime")
 (require 'slime)
 
 
@@ -300,12 +337,30 @@
 ;; Thibaults rosemacs plugin
 (require 'rosemacs-repl)
 
-;; Adapto stuff
+;; adapto project
+; Use those for loading and killing kibo
 (require 'adapto-util)
-(push (list "nav_pm" "morse-jido-navigation")
- *adapto-startup-systems*)
- (setf *adapto-startup-in-package*
-       "mjido-nav-pm")
+(global-set-key "\C-cl" '(lambda ()
+                          (interactive)
+                          (slime-ros)
+                          (rosemacs-repl-mode t)))
+(global-set-key "\C-cr"
+                '(lambda ()
+                  (interactive)
+                  (slime-restart-inferior-lisp)))
+(global-set-key "\C-cf"
+                '(lambda ()
+                  (interactive)
+                  (slime-quit-lisp)))
+
+(push '("adapto"
+        "ad-exe"
+        (("adapto_executive" "adapto-executive")))
+      *adapto-startup-projects*)
+(push '("turtle"
+        "turtle-hl"
+        (("turtle_process_modules" "turtle-process-modules")))
+      *adapto-startup-projects*)
 
 ;; Rosemacs repl shortcuts:
 (global-set-key "\C-cl" '(lambda ()
