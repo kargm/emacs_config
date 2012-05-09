@@ -46,42 +46,6 @@
                   (interactive)
                   (slime-quit-lisp)))
 
-(defun set-colour-theme (theme)
-  "Helper function to set a bunch of faces and ignore potential errors from missing faces."
-  (mapc (lambda (setting)
-          (condition-case nil
-              (face-spec-set (car setting) (cdr setting))
-            (error t)))
-        theme))
-(defun light-on-dark-theme ()
-  "Setup the colors for a light-on-dark theme."
-  (interactive)
-  (set-colour-theme
-   '((default . ((((type tty)) (:background "black" :foreground "white")) (t (:background "black" :foreground "grey"))))
-     (cursor . ((t (:background "plum"))))
-     (modeline . ((((type tty)) (:inverse-video t)) (t (:foreground "black" :background "grey75" :box (:style released-button)))))
-     (font-lock-keyword-face . ((t (:foreground "white" :bold t))))
-     (font-lock-comment-face . ((((type tty)) (:foreground "cyan")) (t (:foreground "steelblue" :italic t))))
-     (font-lock-string-face . ((((type tty)) (:foreground "green")) (t (:foreground "lightgreen"))))
-     (font-lock-doc-string-face . ((((type tty)) (:foreground "green")) (t (:foreground "lightgreen"))))
-     (font-lock-doc-face . ((((type tty)) (:foreground "green")) (t (:foreground "lightgreen"))))
-     (font-lock-function-name-face . ((((type tty)) (:foreground "red" :bold t)) (t (:foreground "coral" :bold t))))
-     (font-lock-type-face . ((((type tty)) (:foreground "cyan" :bold t)) (t (:foreground "steelblue" :bold t))))
-     (font-lock-variable-name-face . ((((type tty)) (:foreground "magenta")) (t (:foreground "orchid"))))
-     (font-lock-warning-face . ((t (:foreground "red" :bold t))))
-     (font-lock-reference-face . ((((type tty)) (:foreground "red")) (t (:foreground "coral"))))
-     (font-lock-builtin-face . ((((type tty)) (:foreground "red")) (t (:foreground "coral"))))
-     (font-lock-constant-face . ((((type tty)) (:foreground "red")) (t (:foreground "coral"))))
-     (paren-match . ((((type tty)) (:background "blue")) (t (:background "midnightblue"))))
-     (show-paren-match-face . ((((type tty)) (:background "blue")) (t (:background "midnightblue"))))
-     (zmacs-region . ((((type tty)) (:background "magenta")) (t (:foreground "black" :background "lightcoral"))))
-     (region . ((((type tty)) (:background "magenta")) (t (:foreground "black" :background "lightcoral"))))
-     (isearch . ((t (:foreground "white" :background "red"))))
-     (isearch-secondary . ((((type tty)) (:foreground "red" :background "white")) (t (:foreground "red3" :background "grey"))))
-     (isearch-lazy-highlight-face . ((((type tty)) (:foreground "red" :background "white")) (t (:foreground "red3" :background "grey"))))
-     (trailing-spaces-face . ((((type tty)) (:background "grey")) (t (:background "grey15")))))))
-
-(light-on-dark-theme)
 ;; slime (might prevent ROS)
 ;;(if (file-readable-p "/usr/local/lehrstuhl/DIR/lisp/config-host/slime")
 ;;(load "/usr/local/lehrstuhl/DIR/lisp/config-host/slime"))
@@ -93,7 +57,7 @@
 
 ; other settings
 (require 'paren)
-(show-paren-mode 1)
+(show-paren-mode t)
 (global-set-key '[delete] 'delete-char)
 
 
@@ -271,8 +235,13 @@
 
 
 ;; hl-line: highlight the current line
-(when (fboundp 'global-hl-line-mode)
-  (global-hl-line-mode t)) ;; turn it on for all modes by default
+;; (when (fboundp 'global-hl-line-mode)
+;;   (global-hl-line-mode t))
+;; turn it on for all modes by default
+
+(require 'highlight-current-line)
+(highlight-current-line-on t)
+(set-face-background 'highlight-current-line-face "gray15")
 
 ;; restore window configuration
 (require 'winner)
@@ -315,9 +284,9 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(slime-repl-output-face ((t (:inherit font-lock-string-face :foreground "black")))))
+ '(slime-repl-output-face ((t (:inherit font-lock-string-face :foreground "white")))))
 
-(add-to-list 'load-path "/opt/ros/diamondback/ros/tools/rosemacs")
+(add-to-list 'load-path "/opt/ros/electric/ros/tools/rosemacs")
 (require 'rosemacs)
 (invoke-rosemacs)
 
@@ -382,4 +351,6 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(slime-repl-output-face ((t (:inherit font-lock-string-face :foreground "black")))))
+ '(slime-repl-output-face ((t (:inherit font-lock-string-face :foreground "white")))))
+
+(setq frame-background-mode 'dark)
