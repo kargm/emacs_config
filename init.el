@@ -7,7 +7,6 @@
 (defun smooth-scroll (increment)
   (scroll-up increment) (sit-for 0.05)
   (scroll-up increment) (sit-for 0.02)
-  (scroll-up increment) (sit-for 0.02)
   (scroll-up increment) (sit-for 0.05)
   (scroll-up increment) (sit-for 0.06)
   (scroll-up increment))
@@ -354,3 +353,39 @@
  '(slime-repl-output-face ((t (:inherit font-lock-string-face :foreground "white")))))
 
 (setq frame-background-mode 'dark)
+
+(require 'color-theme)
+(setq color-theme-is-global t)
+(color-theme-arjen)
+
+;; AUCTEX 
+;;For Auctex < 11.82 exchange ";;" in the following 2 lines
+;;(require ’tex-site)
+(load "auctex.el" nil t t)
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq TeX-PDF-mode t) ;; .pdf statt .dvi per default:
+;;Zeilenumbruch
+(add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
+;;Syntax Higlight
+(add-hook 'LaTeX-mode-hook 'turn-on-font-lock)
+;; Mathe Modus
+(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+;; Reftex einflechten und laden
+(setq reftex-plug-into-AUCTeX t)
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+;; Satzende ". " statt ". ". " f¨ur M-k: l¨oschen bis Satzende usw.
+(setq sentence-end "[.?!][]\"’)}]*\\($\\| \\| \\)[
+;;]*") ;; Da ist ein "Newline in der Zeile!"
+(setq sentence-end-double-space nil)
+;;direkte Rechtschreib Korrektur:
+;;(add-hook ’LaTeX-mode-hook ’flyspell-mode)
+;; Nur benutzen falls Auctex > 11.81 mit preview-latex:
+(load "preview-latex.el" nil t t)
+;; aspell ist besser als ispell.
+;; Zeile kommentieren, falls nicht installiert:
+(setq-default ispell-program-name "aspell")
+;; Deutsche Rechtschreibung falls \usepackage{ngerman}
+;; oder german benutzt wird
+(add-hook 'TeX-language-de-hook
+(function (lambda () (ispell-change-dictionary "german8"))))
